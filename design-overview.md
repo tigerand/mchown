@@ -15,7 +15,7 @@ Some design objectives:
 
 ```
  main directory processing function (mdpf)
-    called with \{directory to process, cred, job id\}
+    called with {directory to process, cred, job id}
     iterates through the directory entries:
         if file is a directory, if it is the first directory encountered, save it for processing outside the loop, otherwise attempt to queue it.  if that fails, then recursively call mdpf on it
         if file is a regular file or symlink, mod it
