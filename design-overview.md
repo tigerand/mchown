@@ -1,9 +1,9 @@
-## Design overview for the multi-threaded chown program for warpstor, sometimes referred to as super-chown
+## Design overview for the multi-threaded chown utility program
 
 <!-- Copyright 2020-2022 Andrew Sharp andy@tigerand.com, All Rights Reserved
 -->
 
-<b>mchown</b> is a program that performs a multi-threaded, scan of a file system heirarchy and modifies the metadata of the files and directories to reflect what would happen if that heirarchy had been checked out of a source repository by a specific user, ie., that the files and directories be owned by, and be writeable by, that user.  It does not modify sockets/pipes or device files.  In the warpstor system, a checkout is simulated, and in some environments, that means that initially the files are owned by a different user, possibly even the super-user.  This program is intended to remedy that situation in the enviroments where it ocurrs.  The idea is to maximize speed of the operation as much as the computer resources of the system allow.
+<b>mchown</b> is a program that performs a multi-threaded, scan of a file system heirarchy and modifies the metadata of the files and directories to change the user and group ids of those files.  It does not modify sockets/pipes or device files.  The idea is to maximize speed of the operation as much as the computer resources of the system allow.
 
 Some design objectives:
 
@@ -13,6 +13,7 @@ Some design objectives:
 * fall back to single threaded recursion if no threads available
 * \[daemon\] be able to process multiple different heirarchy/credential pairs simultaneously
 
+```
  main directory processing function (mdpf)
     called with \{directory to process, cred, job id\}
     iterates through the directory entries:
@@ -33,3 +34,4 @@ Some design objectives:
     else
         return failure
     endif
+```
