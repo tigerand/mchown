@@ -622,9 +622,6 @@ ql_get_top(void)
 }
 
 
-//	MBUG(" ql_del_top - del_item = %p, del_item->djob->path = %s", del_item,
-//		del_item->djob->path);
-
 /*
  * add a new dir job to the tail of the queue
  */
@@ -917,6 +914,8 @@ main(int argc, char **argv)
 	 * create the pool of threads
 	 * the threads struct is created with one slot more than nthreads
 	 * in order to store thread_num in slot 0 for the main thread
+	 *
+	 * create_pool rarely fails, but issues it's own error msg when it does
 	 */
 	if (create_pool(nthreads)) {
 		exit(1);
