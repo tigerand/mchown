@@ -2,7 +2,7 @@
 
 <!-- Copyright 2020-2022 Andrew Sharp andy@tigerand.com, All Rights Reserved -->
 
-<b>mchown</b> is a program that performs a multi-threaded, scan of a file system heirarchy and modifies the metadata of the files and directories to change the user and group ids of those files.  It does not modify sockets/pipes or device files.  The idea is to maximize speed of the operation as much as the computer resources of the system allow.
+<b>mchown</b> is a program that performs a multi-threaded scan of a file system heirarchy and modifies the metadata of the files and directories to change the user and group ids of those files.  It does not modify sockets/pipes or device files.  The idea is to maximize speed of the operation as much as the computer resources of the system allow.
 
 Some design objectives:
 
@@ -10,7 +10,7 @@ Some design objectives:
 * use a thread pool design to avoid the high cost of forking and reaping threads
 * minimize the features in order to minizime the amount of locking
 * fall back to single threaded recursion if no threads available
-* \[daemon\] be able to process multiple different heirarchy/credential pairs simultaneously
+* \[daemon\] be able to process multiple different heirarchy/credential pairs simultaneously - not yet implemented - phase 2.
 
 ```
  main directory processing function (mdpf)
