@@ -60,6 +60,7 @@ target/
 *.so
 *.o
 mchown
+.d/
 
 # vim
 .*.sw[po]
