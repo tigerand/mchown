@@ -3,7 +3,7 @@
 
 # mchown - multi-threaded, recursive chown-like program
 
-##Usage
+## Usage
 usage:
 mchown [-h] <path> <uid> <gid>
 	where path is the FQ path of the heirarchy to process, and
@@ -14,7 +14,7 @@ mchown [-h] <path> <uid> <gid>
 		than the calculated number of threads or it will be ignored
 
 
-###Build
+### Build
 * use *debug* make target when switching between debug and non-debug versions<br>
  ```make debug```
 * use *clean* target when switching between debug and non-debug versions<br>
