@@ -6,12 +6,9 @@
 ## Usage
 usage:
 mchown [-h] <path> <uid> <gid>
-	where path is the FQ path of the heirarchy to process, and
-	u/gid is the user/group id to set as the new ownership of the
-	files in that heirarchy
+	where path is the FQ path of the heirarchy to process, and u/gid is the user/group id to set as the new ownership of the files in that heirarchy
 	-h	help message
-	-n N	use a thread pool with N threads, which must be less
-		than the calculated number of threads or it will be ignored
+	-n N	use a thread pool with N threads, which must be less than the calculated number of threads or it will be ignored
 
 
 ### Build
