@@ -1,7 +1,6 @@
 ## Design overview for the multi-threaded chown utility program
 
-<!-- Copyright 2020-2022 Andrew Sharp andy@tigerand.com, All Rights Reserved
--->
+<!-- Copyright 2020-2022 Andrew Sharp andy@tigerand.com, All Rights Reserved -->
 
 <b>mchown</b> is a program that performs a multi-threaded, scan of a file system heirarchy and modifies the metadata of the files and directories to change the user and group ids of those files.  It does not modify sockets/pipes or device files.  The idea is to maximize speed of the operation as much as the computer resources of the system allow.
 
