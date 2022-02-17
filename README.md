@@ -15,7 +15,9 @@ where path is the FQ path of the heirarchy to process, and u/gid is the user/gro
 
 -h	help message
 
--n N	use a thread pool with N threads, which must be less than the calculated number of threads or it will be ignored
+-n N	use a thread pool with N threads, which must be less than the calculated number of threads or it will be ignored, with a warning
+
+-d	If compiled with debug, will toggle debug output.  If not compiled with debug support, will exit with a usage message.  Useful if compile with debug support, but you want to do a test run for speed, etc.
 
 
 ### Build

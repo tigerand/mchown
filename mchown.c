@@ -734,15 +734,15 @@ usage(char *prog_name)
 	} else {
 		basename = prog_name;
 	}
-	fmt = "\nusage:\n%s [-h]" 
+	fmt = "\nusage:\n%s [-h] [-n N]" 
 #ifdef MDEBUG
 		" [-d]" 
 #endif
-		" <path> <uid> <gid>\n";
+		" <path> <numeric-uid> <numeric-gid>\n";
 	printf(fmt, basename);
 	printf("\twhere path is the FQ path of the heirarchy to process, and\n");
-	printf("\tu/gid is the user/group id to set as the new ownership of the\n");
-	printf("\tfiles in that heirarchy\n");
+	printf("\tu/gid is the numeric user/group id to set as the new\n");
+	printf("\towner/group of the files in that heirarchy\n");
 	printf("\t-h\thelp message\n");
 #ifdef MDEBUG
 	printf("\t-d\ttoggle debugging output\n");
