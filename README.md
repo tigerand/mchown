@@ -3,9 +3,13 @@
 
 # mchown - multi-threaded, recursive chown-like program
 
+### Speedup
+Typical speedup is greater than 10 to 1 on non-memory file systems.  Much greater speedups have been seen in testing, however.  Most testing focused on file heirarchies of greater that 1 million files.
+
 ## Usage
-usage:
-mchown [-h] \<path\> \<uid\> \<gid\>
+Usually must be root to run if you're changing the UID of a file.  If you're only changing the GID of a file, and the user you're running as has the right to that GID, then it will work without superuser priviledges.
+
+mchown [-h] \<path\> \<numeric-uid\> \<numeric-gid\>
 
 where path is the FQ path of the heirarchy to process, and u/gid is the user/group id to set as the new ownership of the files in that heirarchy
 
