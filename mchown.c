@@ -19,6 +19,8 @@
 #include <stdint.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <pwd.h>
+#include <grp.h>
 
 #include "mchown.h"
 #ifdef MDEBUG
@@ -31,8 +33,8 @@ pthread_mutex_t queue_lock;
 pthread_cond_t queue_cv;
 
 int nthreads;                    /* the number of pool threads we have */
-//int n_avail_threads;             /* number of sleeping threads - queue_lock */
-int dname_max;                    /* the size to allocate for dirent struct */
+//int n_avail_threads;            /* number of sleeping threads - queue_lock */
+int dname_max;                   /* the size to allocate for dirent struct */
 uint64_t files_chowned;
 uint64_t dirs_chowned;
 
@@ -738,11 +740,12 @@ usage(char *prog_name)
 #ifdef MDEBUG
 		" [-d]" 
 #endif
-		" <path> <numeric-uid> <numeric-gid>\n";
+		" <path> <user> <group>\n";
 	printf(fmt, basename);
 	printf("\twhere path is the FQ path of the heirarchy to process, and\n");
-	printf("\tu/gid is the numeric user/group id to set as the new\n");
-	printf("\towner/group of the files in that heirarchy\n");
+	printf("\tuser/group is either the user/group name or the numeric\n");
+	printf("user/group id to set as the new owner/group of the files\n");
+	printf("\tin the specified path\n");
 	printf("\t-h\thelp message\n");
 #ifdef MDEBUG
 	printf("\t-d\ttoggle debugging output\n");
@@ -767,6 +770,10 @@ main(int argc, char **argv)
 	struct rlimit limits;
 	extern char *optarg;
 	extern int optind, opterr, optopt;
+	char user_name[64];
+	char group_name[64];
+	struct passwd *pw_entry;
+	struct group *gr_entry;
 
 	user_thr_cnt = 0;
 
@@ -823,6 +830,7 @@ main(int argc, char **argv)
 	nthreads = (int)((float)ncores * .9);
 	DBUG("calculated nthreads of %d from %d cores", nthreads, ncores);
 
+	/* this could be cleaner, or clearer */
 	if (user_thr_cnt > 0) {
 		if (user_thr_cnt < nthreads) {
 			nthreads = user_thr_cnt;
@@ -850,19 +858,53 @@ main(int argc, char **argv)
 		exit(1);
 	}
 
+	/* this should be higher up, and, it needs to be able to use
+	 * user names as well as numeric uid, AND, it needs to check them
+	 * for validity.  although not the u/gids, I guess
+	 */
+
+	/* set the directory head from the invocation argument */
 	dir_jobs[0].path = argv[optind++];
-	i = sscanf(argv[optind++], "%u", &uid);
+	i = sscanf(argv[optind], "%u", &uid);
 	if (i != 1) {
-		usage(argv[0]);
-		printf("\nCould not process '%s' as a numeric UID\n", argv[--optind]);
-		exit(1);
+		i = sscanf(argv[optind], "%62s", user_name);
+		user_name[62] = '\0';
+		if (i != 1) {
+			usage(argv[0]);
+			printf("\nCould not input '%s' as a numeric UID or user name\n",
+				argv[optind]);
+			exit(1);
+		}
+		pw_entry = getpwnam((const char *)user_name);
+		if (pw_entry == NULL) {
+			usage(argv[0]);
+			printf("\nCould not process '%s' as a user name, errno '%d'\n",
+				argv[optind], errno);
+			exit(1);
+		}
+		uid = pw_entry->pw_uid;
 	}
-	i = sscanf(argv[optind++], "%u", &gid);
+	optind++;
+	i = sscanf(argv[optind], "%u", &gid);
 	if (i != 1) {
-		usage(argv[0]);
-		printf("\nCould not process '%s' as a numeric GID\n", argv[--optind]);
-		exit(1);
+		i = sscanf(argv[optind], "%62s", group_name);
+		group_name[62] = '\0';
+		if (i != 1) {
+			usage(argv[0]);
+			printf("\nCould not input '%s' as a numeric GID or group name\n",
+				argv[optind]);
+			exit(1);
+		}
+		gr_entry = getgrnam((const char *)group_name);
+		if (gr_entry == NULL) {
+			usage(argv[0]);
+			printf("\nCould not process '%s' as a group name, errno '%d'\n",
+				argv[optind], errno);
+			exit(1);
+		}
+		gid = gr_entry->gr_gid;
 	}
+	optind++;
 	DBUG("mchown invoked with path '%s' uid %d gid %d", dir_jobs[0].path, uid,
 		gid);
 
